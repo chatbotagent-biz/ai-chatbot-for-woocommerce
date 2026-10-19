@@ -3073,7 +3073,7 @@ function wcai_ajax_send_with_tracking() {
     if (!empty($materials)) $catalog_info .= "Materials: " . implode(', ', $materials) . "\n";
     $catalog_info = apply_filters('wcai_catalog_info', $catalog_info);
 
-    $response = wp_remote_post(WCAI_SAAS_URL . '/chat', [
+     $response = wp_remote_post(WCAI_SAAS_URL . '/chat', [
         'headers' => [
             'Authorization' => 'Bearer ' . $license_key,
             'Content-Type' => 'application/json',
@@ -3093,16 +3093,53 @@ function wcai_ajax_send_with_tracking() {
                 'page_context' => $page_context,
             ],
         ]),
-        'timeout' => 120,
+        'timeout' => 30,
         'sslverify' => true,
     ]);
 
     $search_time = microtime(true) - $start_time;
 
     if (is_wp_error($response)) {
+        $err_code = $response->get_error_code();
+        if ($err_code === 'http_request_timeout' || strpos((string)$response->get_error_message(), 'timed out') !== false) {
+            $msg = '⏳ Server is taking too long to respond. Please try again in a few seconds.';
+        } elseif ($err_code === 'http_request_failed') {
+            $msg = '🌐 Connection problem. Please check your internet and try again.';
+        } else {
+            $msg = '⚠️ Server temporarily unavailable. Please try again in a moment.';
+        }
         wp_send_json_success([
-            'reply' => '⚠️ Error connecting to server: ' . $response->get_error_message(),
+            'reply' => $msg,
+            'plain_reply' => $msg,
             'products' => [], 'products_count' => 0
+        ]);
+        return;
+    }
+
+    $response_code = wp_remote_retrieve_response_code($response);
+    $body = wp_remote_retrieve_body($response);
+
+    if ($response_code !== 200) {
+        $retry_after = (int) wp_remote_retrieve_header($response, 'retry-after');
+
+        if ($response_code === 429) {
+            $wait = $retry_after > 0 ? " Please wait {$retry_after} seconds." : '';
+            $reply = "⏳ Server is overloaded.{$wait}";
+        } elseif ($response_code === 503) {
+            $reply = "🛠️ Server is temporarily overloaded. Please try again in a minute.";
+        } elseif ($response_code === 401 || $response_code === 403) {
+            $reply = "🔒 License error. Please check your license in the admin panel.";
+        } elseif ($response_code === 413) {
+            $reply = "📦 Message too large. Please shorten it.";
+        } else {
+            $reply = "⚠️ Server error (HTTP {$response_code}). Please try again.";
+        }
+
+        wp_send_json_success([
+            'reply' => $reply,
+            'plain_reply' => $reply,
+            'products' => [], 'products_count' => 0,
+            'error_code' => $response_code,
         ]);
         return;
     }
