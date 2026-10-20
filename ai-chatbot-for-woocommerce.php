@@ -1970,43 +1970,61 @@ if ($max_price !== null && $max_price >= 0) {
 
     $exact_ids = [];
 
-    if (!empty($oem)) {
+        if (!empty($oem)) {
         $oem_clean = preg_replace('/[^a-z0-9]/', '', strtolower($oem));
         if ($oem_clean) {
-            $sql = "SELECT DISTINCT product_id FROM {$tt}
-                    WHERE term = %s AND weight >= 50";
-            $ids = $wpdb->get_col($wpdb->prepare($sql, $oem_clean));
+            $ids = $wpdb->get_col(
+                $wpdb->prepare(
+                    "SELECT DISTINCT product_id FROM {$tt} WHERE term = %s AND weight >= 50",
+                    $oem_clean
+                )
+            );
             $exact_ids = array_merge($exact_ids, array_map('intval', $ids));
 
-            $sql2 = "SELECT product_id FROM {$pt} WHERE LOWER(sku) = %s";
-            $ids2 = $wpdb->get_col($wpdb->prepare($sql2, strtolower($oem)));
+            $ids2 = $wpdb->get_col(
+                $wpdb->prepare(
+                    "SELECT product_id FROM {$pt} WHERE LOWER(sku) = %s",
+                    strtolower($oem)
+                )
+            );
             $exact_ids = array_merge($exact_ids, array_map('intval', $ids2));
         }
     }
 
     if (!empty($sku_filter)) {
-        $sql = "SELECT product_id FROM {$pt} WHERE LOWER(sku) = %s";
-        $ids = $wpdb->get_col($wpdb->prepare($sql, strtolower($sku_filter)));
+        $ids = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT product_id FROM {$pt} WHERE LOWER(sku) = %s",
+                strtolower($sku_filter)
+            )
+        );
         $exact_ids = array_merge($exact_ids, array_map('intval', $ids));
     }
 
     $exact_ids = array_values(array_unique($exact_ids));
 
-    if (!empty($exact_ids)) {
+        if (!empty($exact_ids)) {
         $placeholders = implode(',', array_fill(0, count($exact_ids), '%d'));
 
         if (!empty($where_clause)) {
-            $sql = "SELECT product_id FROM {$pt}
-                    WHERE product_id IN ({$placeholders})
-                    AND " . substr($where_clause, 6) . "
-                    ORDER BY sales_count DESC";
-            $params = array_merge($exact_ids, $where_params);
-            $rows = $wpdb->get_results($wpdb->prepare($sql, $params));
+            $where_extra = ' AND ' . substr($where_clause, 6);
+            $rows = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT product_id FROM {$pt}
+                     WHERE product_id IN ({$placeholders}) {$where_extra}
+                     ORDER BY sales_count DESC",
+                    array_merge($exact_ids, $where_params)
+                )
+            );
         } else {
-            $sql = "SELECT product_id FROM {$pt}
-                    WHERE product_id IN ({$placeholders})
-                    ORDER BY sales_count DESC";
-            $rows = $wpdb->get_results($wpdb->prepare($sql, $exact_ids));
+            $rows = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT product_id FROM {$pt}
+                     WHERE product_id IN ({$placeholders})
+                     ORDER BY sales_count DESC",
+                    $exact_ids
+                )
+            );
         }
 
         $exact_results = [];
@@ -2040,12 +2058,15 @@ if ($max_price !== null && $max_price >= 0) {
     $all_product_ids = [];
     $seen_ids = [];
 
-    if (!empty($search_clean)) {
-        $title_like = '%' . $wpdb->esc_like($search_clean) . '%';
-        $sql = "SELECT product_id FROM $pt WHERE title LIKE %s";
-        if (!empty($where_clause)) $sql .= " AND " . substr($where_clause, 6);
-        $params = array_merge([$title_like], $where_params);
-        $results = $wpdb->get_results($wpdb->prepare($sql, $params));
+        if (!empty($search_clean)) {
+        $title_like  = '%' . $wpdb->esc_like($search_clean) . '%';
+        $where_extra = !empty($where_clause) ? ' AND ' . substr($where_clause, 6) : '';
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT product_id FROM $pt WHERE title LIKE %s {$where_extra}",
+                array_merge([$title_like], $where_params)
+            )
+        );
         if ($results) {
             foreach ($results as $r) {
                 $id = (int)$r->product_id;
@@ -2053,22 +2074,29 @@ if ($max_price !== null && $max_price >= 0) {
             }
         }
     }
-    if (empty($search_clean) && $has_filters) {
-        $order_sql = " ORDER BY sales_count DESC ";
+        if (empty($search_clean) && $has_filters) {
+        $order_sql = ' ORDER BY sales_count DESC ';
         if (!empty($sort_by)) {
-            if ($sort_by === 'price_low')       $order_sql = " ORDER BY price ASC ";
-            elseif ($sort_by === 'price_high')  $order_sql = " ORDER BY price_max DESC ";
-            elseif ($sort_by === 'rating')      $order_sql = " ORDER BY rating DESC, rating_count DESC ";
-            elseif ($sort_by === 'popularity')  $order_sql = " ORDER BY sales_count DESC, is_bestseller DESC ";
+            if ($sort_by === 'price_low')       $order_sql = ' ORDER BY price ASC ';
+            elseif ($sort_by === 'price_high')  $order_sql = ' ORDER BY price_max DESC ';
+            elseif ($sort_by === 'rating')      $order_sql = ' ORDER BY rating DESC, rating_count DESC ';
+            elseif ($sort_by === 'popularity')  $order_sql = ' ORDER BY sales_count DESC, is_bestseller DESC ';
         }
 
-        $sql = "SELECT product_id FROM $pt";
-        if (!empty($where_clause)) $sql .= " " . $where_clause;
-        $sql .= $order_sql . " LIMIT 200";
-
-        $results = !empty($where_params)
-            ? $wpdb->get_results($wpdb->prepare($sql, $where_params))
-            : $wpdb->get_results($sql);
+        $where_extra = !empty($where_clause) ? ' ' . $where_clause : '';
+        if (!empty($where_params)) {
+            $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT product_id FROM $pt {$where_extra} {$order_sql} LIMIT 200",
+                    $where_params
+                )
+            );
+        } else {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- no placeholders, order by whitelisted
+            $results = $wpdb->get_results(
+                "SELECT product_id FROM $pt {$where_extra} {$order_sql} LIMIT 200"
+            );
+        }
 
         if ($results) {
             foreach ($results as $r) {
@@ -2077,21 +2105,23 @@ if ($max_price !== null && $max_price >= 0) {
             }
         }
     }
-    if (!empty($words)) {
+        if (!empty($words)) {
         $words = array_slice($words, 0, 10);
         $term_placeholders = implode(',', array_fill(0, count($words), '%s'));
         $total_words = count($words);
         $min_matches = $is_phrase_search ? $total_words : 1;
+        $where_extra = !empty($where_clause) ? ' AND ' . substr($where_clause, 6) : '';
 
-        $sql = "SELECT DISTINCT $tt.product_id
-                FROM $tt
-                INNER JOIN $pt ON $pt.product_id = $tt.product_id
-                WHERE $tt.term IN ($term_placeholders)";
-        if (!empty($where_clause)) $sql .= " AND " . substr($where_clause, 6);
-        $sql .= " GROUP BY $tt.product_id HAVING COUNT(DISTINCT $tt.term) >= %d";
-
-        $params = array_merge($words, $where_params, [$min_matches]);
-        $results = $wpdb->get_results($wpdb->prepare($sql, $params));
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT DISTINCT $tt.product_id
+                 FROM $tt
+                 INNER JOIN $pt ON $pt.product_id = $tt.product_id
+                 WHERE $tt.term IN ($term_placeholders) {$where_extra}
+                 GROUP BY $tt.product_id HAVING COUNT(DISTINCT $tt.term) >= %d",
+                array_merge($words, $where_params, [$min_matches])
+            )
+        );
         if ($results) {
             foreach ($results as $r) {
                 $id = (int)$r->product_id;
@@ -2100,16 +2130,20 @@ if ($max_price !== null && $max_price >= 0) {
         }
     }
 
-    if (empty($all_product_ids) && $is_phrase_search && !empty($words)) {
+        if (empty($all_product_ids) && $is_phrase_search && !empty($words)) {
         $words = array_slice($words, 0, 10);
         $term_placeholders = implode(',', array_fill(0, count($words), '%s'));
-        $sql = "SELECT DISTINCT $tt.product_id
-                FROM $tt
-                INNER JOIN $pt ON $pt.product_id = $tt.product_id
-                WHERE $tt.term IN ($term_placeholders)";
-        if (!empty($where_clause)) $sql .= " AND " . substr($where_clause, 6);
-        $params = array_merge($words, $where_params);
-        $results = $wpdb->get_results($wpdb->prepare($sql, $params));
+        $where_extra = !empty($where_clause) ? ' AND ' . substr($where_clause, 6) : '';
+
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT DISTINCT $tt.product_id
+                 FROM $tt
+                 INNER JOIN $pt ON $pt.product_id = $tt.product_id
+                 WHERE $tt.term IN ($term_placeholders) {$where_extra}",
+                array_merge($words, $where_params)
+            )
+        );
         if ($results) {
             foreach ($results as $r) {
                 $id = (int)$r->product_id;
@@ -2118,18 +2152,22 @@ if ($max_price !== null && $max_price >= 0) {
         }
     }
 
-    if (empty($all_product_ids) && !empty($words)) {
+        if (empty($all_product_ids) && !empty($words)) {
         $title_conditions = [];
         $title_params = [];
         foreach ($words as $word) {
-            $title_conditions[] = "title LIKE %s";
+            $title_conditions[] = 'title LIKE %s';
             $title_params[] = '%' . $wpdb->esc_like($word) . '%';
         }
-        $title_sql = implode(' OR ', $title_conditions);
-        $sql = "SELECT product_id FROM $pt WHERE ($title_sql)";
-        if (!empty($where_clause)) $sql .= " AND " . substr($where_clause, 6);
-        $params = array_merge($title_params, $where_params);
-        $results = $wpdb->get_results($wpdb->prepare($sql, $params));
+        $title_sql   = implode(' OR ', $title_conditions);
+        $where_extra = !empty($where_clause) ? ' AND ' . substr($where_clause, 6) : '';
+
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT product_id FROM $pt WHERE ($title_sql) {$where_extra}",
+                array_merge($title_params, $where_params)
+            )
+        );
         if ($results) {
             foreach ($results as $r) {
                 $id = (int)$r->product_id;
@@ -4306,13 +4344,19 @@ function wcai_page_logs() {
         $where_params[] = $like;
     }
 
-    $count_sql = "SELECT COUNT(*) FROM %i $where_sql";
-    $count_params = array_merge([$table], $where_params);
-    $total = (int)$wpdb->get_var($wpdb->prepare($count_sql, $count_params));
+        $total = (int) $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT COUNT(*) FROM %i {$where_sql}",
+            array_merge([$table], $where_params)
+        )
+    );
 
-    $logs_sql = "SELECT * FROM %i $where_sql ORDER BY id DESC LIMIT %d OFFSET %d";
-    $logs_params = array_merge([$table], $where_params, [$per_page, ($page - 1) * $per_page]);
-    $logs = $wpdb->get_results($wpdb->prepare($logs_sql, $logs_params));
+    $logs = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT * FROM %i {$where_sql} ORDER BY id DESC LIMIT %d OFFSET %d",
+            array_merge([$table], $where_params, [$per_page, ($page - 1) * $per_page])
+        )
+    );
     ?>
     <div class="wrap">
         <h1>Chat Logs <span style="font-size:14px;font-weight:normal;color:#6b7280;"><?php echo esc_html(number_format($total)); ?> total</span></h1>
@@ -4794,13 +4838,14 @@ function wcai_page_diagnostics() {
             <button onclick="wcaiCopyReport()" class="button button-primary">📋 Copy Report</button>
             <span id="copy-msg" style="display:none;color:#22c55e;font-weight:600;line-height:30px;">✅ Copied!</span>
         </div>
-        <textarea id="diagnostic-report" readonly style="width:100%;height:200px;font-family:monospace;font-size:12px;margin-top:10px;display:none;"><?php
-            echo "=== AI Chatbot Diagnostic Report ===\n";
-            echo "Site: " . home_url() . "\n";
-            echo "Date: " . current_time('Y-m-d H:i:s') . "\n\n";
+                <textarea id="diagnostic-report" readonly style="width:100%;height:200px;font-family:monospace;font-size:12px;margin-top:10px;display:none;"><?php
+            $report  = "=== AI Chatbot Diagnostic Report ===\n";
+            $report .= 'Site: ' . home_url() . "\n";
+            $report .= 'Date: ' . current_time('Y-m-d H:i:s') . "\n\n";
             foreach ($results as $name => $r) {
-                echo str_pad($name . ':', 25) . $r['value'] . ' [' . ($r['ok'] ? 'OK' : 'FAIL') . "]\n";
+                $report .= str_pad($name . ':', 25) . $r['value'] . ' [' . ($r['ok'] ? 'OK' : 'FAIL') . "]\n";
             }
+            echo esc_textarea($report);
         ?></textarea>
     </div>
     <?php
@@ -4813,43 +4858,90 @@ function wcai_export_logs_csv() {
     if (!check_admin_referer('wcai_export_csv_action')) return;
 
     global $wpdb;
-    $table = $wpdb->prefix . 'wcai_logs';
-    $filter = sanitize_text_field($_POST['export_filter'] ?? 'all');
-    $period = sanitize_text_field($_POST['export_period'] ?? 'all');
+    $table  = $wpdb->prefix . 'wcai_logs';
+    $filter = sanitize_text_field(wp_unslash($_POST['export_filter'] ?? 'all'));
+    $period = sanitize_text_field(wp_unslash($_POST['export_period'] ?? 'all'));
+
     $where = [];
 
     switch ($filter) {
-        case 'success': case 'with_products': $where[] = 'products_count > 0'; break;
-        case 'failed': case 'empty': $where[] = 'products_count = 0'; break;
+        case 'success':
+        case 'with_products':
+            $where[] = 'products_count > 0';
+            break;
+        case 'failed':
+        case 'empty':
+            $where[] = 'products_count = 0';
+            break;
     }
-    if ($period !== 'all') {
-        $days = (int)$period;
-        if ($days > 0) $where[] = $wpdb->prepare('created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)', $days);
-    }
-    $where_sql = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
-    $rows = $wpdb->get_results("SELECT * FROM $table $where_sql ORDER BY id ASC", ARRAY_A);
-    if (empty($rows)) wp_die('No data to export. <a href="' . admin_url('admin.php?page=wcai-logs') . '">← Back</a>');
 
-    $filename = 'wcai-logs-' . date('Y-m-d-His') . '.csv';
+    if ($period !== 'all') {
+        $days = (int) $period;
+        if ($days > 0) {
+            $where[] = $wpdb->prepare(
+                'created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)',
+                $days
+            );
+        }
+    }
+
+    $where_sql = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+
+    $rows = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT * FROM %i {$where_sql} ORDER BY id ASC",
+            $table
+        ),
+        ARRAY_A
+    );
+
+    if (empty($rows)) {
+        wp_die(
+            'No data to export. <a href="' . esc_url(admin_url('admin.php?page=wcai-logs')) . '">← Back</a>'
+        );
+    }
+
+    // Собираем CSV в строку (без fwrite/fputcsv/fclose).
+    $csv  = "\xEF\xBB\xBF"; // UTF-8 BOM для Excel
+    $csv .= "ID;Time;User Query;Bot Reply;Products;Credits;Lead\n";
+
+    foreach ($rows as $row) {
+        $bot_reply = wp_strip_all_tags($row['bot_reply'] ?? '');
+        $bot_reply = trim(preg_replace('/\s+/', ' ', $bot_reply));
+
+        $fields = [
+            $row['id'] ?? '',
+            $row['created_at'] ?? '',
+            $row['user_query'] ?? '',
+            $bot_reply,
+            $row['products_count'] ?? 0,
+            $row['credits_used'] ?? 0,
+            !empty($row['lead_converted']) ? 'Yes' : 'No',
+        ];
+
+        // Экранируем разделитель ; внутри полей согласно RFC 4180
+        $fields = array_map(static function ($v) {
+            $v = (string) $v;
+            if (strpos($v, ';') !== false || strpos($v, '"') !== false
+                || strpos($v, "\n") !== false || strpos($v, "\r") !== false) {
+                $v = '"' . str_replace('"', '""', $v) . '"';
+            }
+            return $v;
+        }, $fields);
+
+        $csv .= implode(';', $fields) . "\n";
+    }
+
+    $filename = 'wcai-logs-' . gmdate('Y-m-d-His') . '.csv';
+
+    nocache_headers();
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Pragma: no-cache');
     header('Expires: 0');
 
-    $output = fopen('php://output', 'w');
-    fwrite($output, "\xEF\xBB\xBF");
-    fputcsv($output, ['ID', 'Time', 'User Query', 'Bot Reply', 'Products', 'Credits', 'Lead'], ';');
-
-    foreach ($rows as $row) {
-        $bot_reply = wp_strip_all_tags($row['bot_reply'] ?? '');
-        $bot_reply = trim(preg_replace('/\s+/', ' ', $bot_reply));
-        fputcsv($output, [
-            $row['id'] ?? '', $row['created_at'] ?? '', $row['user_query'] ?? '',
-            $bot_reply, $row['products_count'] ?? 0, $row['credits_used'] ?? 0,
-            !empty($row['lead_converted']) ? 'Yes' : 'No',
-        ], ';');
-    }
-    fclose($output);
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- raw CSV download, not HTML
+    echo $csv;
     exit;
 }
 
@@ -4860,34 +4952,72 @@ function wcai_export_session_csv() {
     if (!check_admin_referer('wcai_export_session_csv_action')) return;
 
     $session_id = wcai_validate_session_id(wp_unslash($_POST['session_id'] ?? ''));
-    if (empty($session_id)) wp_die('Invalid session ID.');
+    if (empty($session_id)) {
+        wp_die('Invalid session ID.');
+    }
 
     global $wpdb;
     $table = $wpdb->prefix . 'wcai_logs';
-    $cols = $wpdb->get_col($wpdb->prepare("SHOW COLUMNS FROM %i", $table));
-    if (!in_array('session_id', $cols)) wp_die('Session tracking not enabled.');
 
-    $rows = $wpdb->get_results($wpdb->prepare(
-        "SELECT * FROM %i WHERE session_id = %s ORDER BY id ASC", $table, $session_id
-    ), ARRAY_A);
-    if (empty($rows)) wp_die('No data for this session.');
+    $cols = $wpdb->get_col(
+        $wpdb->prepare('SHOW COLUMNS FROM %i', $table)
+    );
+    if (!in_array('session_id', $cols, true)) {
+        wp_die('Session tracking not enabled.');
+    }
 
-    $filename = 'wcai-session-' . substr($session_id, 0, 8) . '-' . date('Y-m-d-His') . '.csv';
+    $rows = $wpdb->get_results(
+        $wpdb->prepare(
+            'SELECT * FROM %i WHERE session_id = %s ORDER BY id ASC',
+            $table,
+            $session_id
+        ),
+        ARRAY_A
+    );
+
+    if (empty($rows)) {
+        wp_die('No data for this session.');
+    }
+
+    // Собираем CSV в строку (без fwrite/fputcsv/fclose).
+    $csv  = "\xEF\xBB\xBF"; // UTF-8 BOM для Excel
+    $csv .= "ID;Time;User Query;Bot Reply;Products;Credits;Lead\n";
+
+    foreach ($rows as $row) {
+        $bot_reply = wp_strip_all_tags($row['bot_reply'] ?? '');
+        $bot_reply = trim(preg_replace('/\s+/', ' ', $bot_reply));
+
+        $fields = [
+            $row['id'] ?? '',
+            $row['created_at'] ?? '',
+            $row['user_query'] ?? '',
+            $bot_reply,
+            $row['products_count'] ?? 0,
+            $row['credits_used'] ?? 0,
+            !empty($row['lead_converted']) ? 'Yes' : 'No',
+        ];
+
+        // Экранируем разделитель ; внутри полей согласно RFC 4180
+        $fields = array_map(static function ($v) {
+            $v = (string) $v;
+            if (strpos($v, ';') !== false || strpos($v, '"') !== false
+                || strpos($v, "\n") !== false || strpos($v, "\r") !== false) {
+                $v = '"' . str_replace('"', '""', $v) . '"';
+            }
+            return $v;
+        }, $fields);
+
+        $csv .= implode(';', $fields) . "\n";
+    }
+
+    $filename = 'wcai-session-' . substr($session_id, 0, 8) . '-' . gmdate('Y-m-d-His') . '.csv';
+
+    nocache_headers();
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
 
-    $output = fopen('php://output', 'w');
-    fwrite($output, "\xEF\xBB\xBF");
-    fputcsv($output, ['ID', 'Time', 'User Query', 'Bot Reply', 'Products', 'Credits', 'Lead'], ';');
-    foreach ($rows as $row) {
-        $bot_reply = trim(preg_replace('/\s+/', ' ', wp_strip_all_tags($row['bot_reply'] ?? '')));
-        fputcsv($output, [
-            $row['id'] ?? '', $row['created_at'] ?? '', $row['user_query'] ?? '',
-            $bot_reply, $row['products_count'] ?? 0, $row['credits_used'] ?? 0,
-            !empty($row['lead_converted']) ? 'Yes' : 'No',
-        ], ';');
-    }
-    fclose($output);
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- raw CSV download, not HTML
+    echo $csv;
     exit;
 }
 
