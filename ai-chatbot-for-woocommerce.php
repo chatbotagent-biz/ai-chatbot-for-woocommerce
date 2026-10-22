@@ -344,11 +344,16 @@ function wcai_activate_license($license_key) {
 }
 
 function wcai_get_license_status() {
+    // Патч: кэшируем и НЕвалидные ответы, и ошибки сети, чтобы не долбить сервер
     $cached = get_transient('wcai_license_cache');
-    if ($cached) return $cached;
+    if ($cached !== false) return $cached;
 
     $license_key = get_option('wcai_license_key', '');
-    if (empty($license_key)) return ['valid' => false, 'message' => 'No license activated'];
+    if (empty($license_key)) {
+        $no_license = ['valid' => false, 'message' => 'No license activated'];
+        set_transient('wcai_license_cache', $no_license, 5 * MINUTE_IN_SECONDS);
+        return $no_license;
+    }
 
     global $wpdb;
     if (!$wpdb->check_connection()) {
@@ -363,22 +368,36 @@ function wcai_get_license_status() {
         'sslverify' => true,
     ]);
 
-    if (!is_wp_error($response)) {
-        $data = json_decode(wp_remote_retrieve_body($response), true);
-        if (!empty($data['valid'])) {
-            set_transient('wcai_license_cache', $data, 6 * HOUR_IN_SECONDS);
-            update_option('wcai_license_data', $data);
-            return $data;
-        }
-    } else {
+    if (is_wp_error($response)) {
+        // Ошибка сети / таймаут — кэшируем на 2 минуты
         error_log("WCAI License check error: " . $response->get_error_message());
+        $err = ['valid' => false, 'message' => 'License check failed'];
+        set_transient('wcai_license_cache', $err, 2 * MINUTE_IN_SECONDS);
+        return $err;
     }
-    return ['valid' => false, 'message' => 'License check failed'];
+
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+
+    if (!empty($data['valid'])) {
+        // Успешный ответ — кэш на 6 часов (как было)
+        set_transient('wcai_license_cache', $data, 6 * HOUR_IN_SECONDS);
+        update_option('wcai_license_data', $data);
+        return $data;
+    }
+
+    // Сервер ответил, но лицензия невалидна (404 / valid=false) — кэш на 5 минут
+    $invalid = ['valid' => false, 'message' => 'License check failed'];
+    set_transient('wcai_license_cache', $invalid, 5 * MINUTE_IN_SECONDS);
+    return $invalid;
 }
 
 function wcai_is_license_active() {
+    static $result = null;
+    if ($result !== null) return $result;
+
     $s = wcai_get_license_status();
-    return !empty($s['valid']) && !empty($s['credits']) && $s['credits'] > 0 && strtotime($s['expires_at']) > time();
+    $result = !empty($s['valid']) && !empty($s['credits']) && $s['credits'] > 0 && strtotime($s['expires_at']) > time();
+    return $result;
 }
 add_action('admin_init', function() {
     add_option('wcai_catalog_mapping', []);
@@ -3319,7 +3338,13 @@ function wcai_log_query_with_tracking($query, $reply, $products, $credits_used, 
         if (preg_match('/^[a-f0-9\-]{20,64}$/i', $sid)) $session_id = $sid;
     }
 
+       $columns = get_transient('wcai_logs_columns');
+if (empty($columns) || !is_array($columns)) {
     $columns = $wpdb->get_col($wpdb->prepare("SHOW COLUMNS FROM %i", $table));
+    if (!empty($columns) && is_array($columns)) {
+        set_transient('wcai_logs_columns', $columns, DAY_IN_SECONDS);
+    }
+}
 
     $data = [
         'user_query'       => wp_kses_post($query),
