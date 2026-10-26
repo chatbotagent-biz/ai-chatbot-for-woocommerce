@@ -124,7 +124,18 @@ function wcai_convert_price($price, $from_currency = 'USD', $to_currency = null)
     $rate = wcai_get_currency_rate($to_currency);
     return $price * $rate;
 }
+function wcai_verify_rest_credentials($req) {
+    $stored_key  = (string) get_option('wcai_license_key');
+    $stored_hash = (string) get_option('wcai_site_hash');
+    $key  = (string) $req->get_header('X-License-Key');
+    $hash = (string) $req->get_header('X-Site-Hash');
 
+    if ($stored_key === '' || $stored_hash === '' || $key === '' || $hash === '') {
+        return false;
+    }
+
+    return hash_equals($stored_key, $key) && hash_equals($stored_hash, $hash);
+}
 function wcai_get_real_ip() {
     if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
         return sanitize_text_field(wp_unslash($_SERVER['HTTP_CF_CONNECTING_IP']));
@@ -2458,11 +2469,7 @@ add_action('rest_api_init', function () {
                 'search_time' => round(microtime(true) - $t, 4),
             ], 200);
         },
-        'permission_callback' => function ($req) {
-            $key = $req->get_header('X-License-Key');
-            $hash = $req->get_header('X-Site-Hash');
-            return $key === get_option('wcai_license_key') && $hash === get_option('wcai_site_hash');
-        },
+        'permission_callback' => 'wcai_verify_rest_credentials',
     ]);
 
     register_rest_route('wc-ai/v1', '/search-batch', [
@@ -2523,11 +2530,7 @@ add_action('rest_api_init', function () {
 
             return new WP_REST_Response(['groups' => $groups], 200);
         },
-        'permission_callback' => function ($req) {
-            $key = $req->get_header('X-License-Key');
-            $hash = $req->get_header('X-Site-Hash');
-            return $key === get_option('wcai_license_key') && $hash === get_option('wcai_site_hash');
-        },
+        'permission_callback' => 'wcai_verify_rest_credentials',
     ]);
 
     register_rest_route('wc-ai/v1', '/products', [
@@ -2556,13 +2559,7 @@ add_action('rest_api_init', function () {
 
             return new WP_REST_Response(['products' => wcai_format_products($ordered_results)], 200);
         },
-        'permission_callback' => function ($req) {
-            $key = $req->get_header('X-License-Key');
-            $hash = $req->get_header('X-Site-Hash');
-            if (empty($key) || empty($hash)) return false;
-            return hash_equals((string) get_option('wcai_license_key'), (string) $key)
-                && hash_equals((string) get_option('wcai_site_hash'), (string) $hash);
-        }
+        'permission_callback' => 'wcai_verify_rest_credentials',
     ]);
         register_rest_route('wc-ai/v1', '/product-details-public', [
         'methods' => 'POST',
@@ -2613,12 +2610,7 @@ add_action('rest_api_init', function () {
             $formatted = wcai_format_products([$product]);
             return new WP_REST_Response($formatted[0] ?? [], 200);
         },
-        'permission_callback' => function ($req) {
-            $key = $req->get_header('X-License-Key');
-            $hash = $req->get_header('X-Site-Hash');
-            return hash_equals((string) get_option('wcai_license_key'), (string) $key) &&
-                   hash_equals((string) get_option('wcai_site_hash'), (string) $hash);
-        }
+        'permission_callback' => 'wcai_verify_rest_credentials',
     ]);
 
     register_rest_route('wc-ai/v1', '/order-status', [
@@ -2791,11 +2783,7 @@ add_action('rest_api_init', function () {
 
             return new WP_REST_Response($response, 200);
         },
-        'permission_callback' => function ($req) {
-            $key = $req->get_header('X-License-Key');
-            $hash = $req->get_header('X-Site-Hash');
-            return $key === get_option('wcai_license_key') && $hash === get_option('wcai_site_hash');
-        },
+        'permission_callback' => 'wcai_verify_rest_credentials',
     ]);
 
     register_rest_route('wc-ai/v1', '/delivery-status', [
@@ -2981,11 +2969,7 @@ add_action('rest_api_init', function () {
 
             return new WP_REST_Response($response, 200);
         },
-        'permission_callback' => function ($req) {
-            $key = $req->get_header('X-License-Key');
-            $hash = $req->get_header('X-Site-Hash');
-            return $key === get_option('wcai_license_key') && $hash === get_option('wcai_site_hash');
-        },
+        'permission_callback' => 'wcai_verify_rest_credentials',
     ]);
 
     register_rest_route('wc-ai/v1', '/catalog-info', [
@@ -3041,12 +3025,7 @@ add_action('rest_api_init', function () {
             $catalog_info = apply_filters('wcai_catalog_info', $catalog_info);
             return new WP_REST_Response(['catalog_info' => $catalog_info], 200);
         },
-        'permission_callback' => function ($req) {
-            $key  = $req->get_header('X-License-Key');
-            $hash = $req->get_header('X-Site-Hash');
-            return hash_equals((string) get_option('wcai_license_key'), (string) $key)
-                && hash_equals((string) get_option('wcai_site_hash'),  (string) $hash);
-        },
+        'permission_callback' => 'wcai_verify_rest_credentials',
     ]);
 });
 
