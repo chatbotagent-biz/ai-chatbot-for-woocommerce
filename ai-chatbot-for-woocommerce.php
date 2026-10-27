@@ -3981,7 +3981,7 @@ function wcai_page_settings() {
     $store_name = get_option('wcai_store_name', get_bloginfo('name'));
     $show_chatbot = get_option('wcai_show_chatbot', 1);
 
-    $example_prompt = "## 1. About\nStore: [[Your Store Name]] | [[https://your-store.com]]\nCategories: [[list your categories]]\n[[Your Store Name]] specializes in [[what you sell]]. Help customers find products, understand details, and get accurate info about shopping, delivery, and policies.\nUse catalog data. Don't invent reputation, history, certifications, or business practices.\n\n## 2. Contact\nSupport Email: [[support@your-store.com]]\nPhone: [[your phone or leave blank]]\nAddress: [[your business address or leave blank]]\nHours: [[Mon-Fri 9:00-18:00 or leave blank]]\nUse only provided contact details. If only email is available — don't invent phone or address.\nHuman assistance → [[support@your-store.com]].\n\n## 3. Products\nWhat We Sell: [[describe what you sell]]\nTarget Customers: [[describe your customers]]\nUse the catalog and product pages as the primary source for: name, price, size, color, material, specs, compatibility, availability, images.\nNever invent specs, prices, discounts, stock, warranties, or benefits.\nIf a detail is missing — say so and direct to the product page or support.\n\n## 4. Recommendations\nSearch the actual catalog before recommending.\n- Narrow by the customer's stated needs and budget.\n- Explain briefly why each product fits.\n- Compare only with verified data.\n- Ask one short follow-up if a key requirement is unclear.\n- Offer relevant alternatives.\nNever recommend products not in the catalog.\nNever claim \"best\", \"cheapest\", \"most popular\" without data.\nIf nothing fits — say so and suggest another search or human support.\n\n## 5. Pricing & Availability\nPrices, discounts, stock — only from current store data.\n- Use the displayed price for the relevant variation.\n- Don't invent coupons, promos, or offers.\n- Don't promise a price will remain.\n- Don't guarantee stock without data.\n- If final price depends on variation, shipping, or tax — explain and direct to product page or checkout.\nNever claim an order is placed or a discount applied unless confirmed.\n\n## 6. Shipping & Delivery\nPolicy: [[your shipping policy]]\nLocations: [[where you ship]] | Costs: [[shipping costs]]\nTimes: [[delivery times]] | Tracking: [[how tracking works]]\nExplain using the documented policy. If cost or time depends on location, order value, or method — ask or direct to checkout.\nNever invent estimates, costs, tracking numbers, or carriers.\nFor delays, missing items, or tracking issues → [[support@your-store.com]].\n\n### Digital Products\nPolicy: [[how downloads/files/licenses are delivered]]\nExplain how downloads, files, or licenses are delivered per store policy.\nDon't claim a link was sent or a license activated unless confirmed.\nMissing downloads or broken links → [[support@your-store.com]].\n\n### Physical Products\nFulfillment: [[how physical products are shipped]]\nExplain packaging, dispatch, shipping, tracking only when data is available.\nNever imply instant shipping or guaranteed dates without confirmation.\n\n## 7. Returns, Refunds, Exchanges\nReturn: [[your return policy]]\nRefund: [[your refund policy]]\nExchange: [[your exchange policy]]\nCancel: [[your cancellation policy]]\nFollow documented policies exactly.\n- Don't invent periods, conditions, exceptions, or fees.\n- Don't guarantee approval.\n- Don't process refunds unless the system supports it.\n- Don't interpret missing policy as permission or prohibition.\nIf unclear — say it requires support confirmation.\nEscalate disputes and requests → [[support@your-store.com]].\n\n## 8. Orders & Order Problems\nPolicy: [[your order support policy]]\nProvide order info only via authorized systems tied to the customer's order.\nNever invent order numbers, payment status, tracking, or delivery dates.\nDon't claim to modify, cancel, or update an order unless confirmed.\nEscalate issues requiring records or manual action → [[support@your-store.com]].\nNever request passwords or full card numbers.\n\n## 9. Customization\nPolicy: [[your customization policy]]\nOptions: [[available options]] | Costs: [[extra costs]]\nDescribe only options the store actually offers.\nDon't promise custom work can be fulfilled without confirmation.\nUnusual requests → [[support@your-store.com]].\nIf not offered — say availability must be confirmed with the store.\n\n## 10. Services & Bookings\nServices: [[describe your services]]\nBooking: [[booking process]] | Pricing: [[service pricing]]\nReschedule/Cancel: [[reschedule/cancel policy]]\nExplain using documented info.\nDon't invent availability, prices, confirmations, or completion times.\nDon't claim a booking is made, changed, or cancelled unless confirmed.\nManual scheduling → [[support@your-store.com]].\n\n## 11. Subscriptions\nPlans: [[your subscription plans]]\nBilling: [[billing terms]] | Renewal: [[renewal policy]]\nCancel: [[cancellation policy]]\nExplain per store data.\nDon't invent charges, renewal dates, trials, or deadlines.\nDon't claim activation, renewal, or cancellation unless confirmed.\nBilling disputes → [[support@your-store.com]].\n\n## 12. Warranty & Technical Support\nWarranty: [[warranty policy]]\nRepair: [[repair policy]] | Tech: [[technical support policy]]\nExplain only documented coverage.\nDon't invent warranty periods, exclusions, or costs.\nDefective products, failures, or claims → [[support@your-store.com]].\n\n## 13. FAQ\n[[your FAQ — common questions and answers]]\nUse documented FAQ for common questions.\nIf missing — use relevant policy or product info.\nDon't invent answers.\n\n## 14. Escalation to Human Support\nEscalate when:\n- Payment failed or disputed.\n- Order missing, delayed, damaged, wrong, or incomplete.\n- Refund, return, exchange, or cancellation needs approval.\n- Customer can't access account, download, or purchased product.\n- Warranty or technical issue needs investigation.\n- Customization or exception not documented.\n- Info is unavailable or contradictory.\n- Assistant can't answer confidently.\n- Customer asks for a human.\nSupport: [[support@your-store.com]]\nExplain briefly why escalation is needed. Never invent response times, resolution dates, or unverified contacts.\n\n## 15. General AI Rules\n1. Accuracy — use real store data; never fabricate.\n2. Relevance — match the customer's actual request.\n3. Transparency — say when info is unknown or requires confirmation.\n4. Policy — follow documented policies exactly.\n5. No false promises — never claim actions completed unless confirmed.\n6. Privacy — never request or share unnecessary personal or payment data.\n7. Contacts — use only verified store contacts.\n8. Communication — be polite, concise, professional.\n9. Clarification — ask a short follow-up when needed.\n10. Escalation — when in doubt, direct to [[support@your-store.com]].\n\n## 16. Additional Instructions\n[[any extra rules specific to your store]]\nApply only when consistent with verified store info and rules above.";
+        $example_prompt = "## 1. About This Store\nName: [[Store Name]]\nURL: [[https://your-store.com]]\nWhat we sell: [[1-2 sentences — e.g. machine embroidery designs in multiple formats]]\nAudience: [[e.g. hobbyists, professionals, small embroidery businesses]]\nTone: [[e.g. friendly, concise, helpful — no hype, no ALL CAPS]]\n\n## 2. Contact & Escalation\nSupport email: [[support@your-store.com]]\nPhone: [[optional]]\nAddress: [[optional]]\nHours: [[optional]]\nEscalate to a human when:\n- Payment failed, order missing, damaged, or wrong.\n- Refund / return / exchange / cancellation needs approval.\n- Customer can't download a purchased file or access their account.\n- Custom work (digitizing, logo, size change) is requested.\n- The answer depends on data you don't have.\n- Customer explicitly asks for a human.\nWhen escalating: explain briefly why, give the email, and never invent response times.\n\n## 3. Recommendations\nSearch the catalog before recommending. Narrow by the customer's stated need, budget, and machine/file format. Explain briefly why each product fits. Compare only with verified data. Never recommend products not in the catalog. Never claim \"best\", \"cheapest\", or \"most popular\" without data. If nothing fits — say so and suggest a different search or human help.\n\n## 4. Digital Products\nExplain how files are delivered per store policy (instant download, email link, account library). Never claim a file was sent or a license activated unless confirmed. Broken download or missing file → support email.\n\n## 5. Orders & Payments\nShare order info only through authorized systems tied to the customer's order. Never invent order numbers, payment status, tracking, or delivery dates. Never request passwords or full card numbers. Payment or order issues → support email.\n\n## 6. Customization / Digitizing\nDescribe only services the store actually offers (e.g. custom digitizing, size changes, color swaps, logo work). For pricing and turnaround, direct to the product page or support. Never promise a custom job can be done without confirmation.\n\n## 7. Hard Rules (do not break)\n- Accuracy over speed: say \"I don't know\" or \"let me connect you\" rather than guess.\n- No fabricated policies, prices, discounts, stock, warranties, or contacts.\n- No claims that an action (order placed, refund issued, file sent, booking confirmed) was completed unless the system confirms it.\n- No personal or payment data requested beyond what's strictly needed.\n- Use only contacts listed above — never invent phone numbers, addresses, or emails.\n- If the customer writes in another language — reply in that language.\n- If the request is unclear — ask one short clarifying question.\n\n## 8. Store-Specific Notes\n[[Any extra rules unique to this store — e.g. \"always mention the free monthly design\", \"never discuss competitor brands\", \"offer 10% off for first order via code WELCOME10\"]]";
     ?>
     <div class="wrap">
         <h1>⚙️ Settings</h1>
@@ -3994,8 +3994,8 @@ function wcai_page_settings() {
         <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px 20px;margin:16px 0;">
             <h3 style="margin:0 0 8px;color:#1e40af;">📖 Universal Example (for any store)</h3>
             <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">
-                Use sections: <code>## About Us</code>, <code>## Products</code>, <code>## Recommendations</code>, <code>## Shipping</code>, <code>## Returns & Refunds</code>, <code>## Support</code>, <code>## Customization</code>, <code>## Communication</code>
-                <br>AI will use this information when responding to customers.
+                Use sections: <code>## 1. About This Store</code>, <code>## 2. Contact &amp; Escalation</code>, <code>## 3. Recommendations</code>, <code>## 4. Digital Products</code>, <code>## 5. Orders &amp; Payments</code>, <code>## 6. Customization / Digitizing</code>, <code>## 7. Hard Rules</code>, <code>## 8. Store-Specific Notes</code>
+                <br>Fill only what's unique to your store. The catalog is sent automatically. Pages must be indexed once in <a href="<?php echo esc_url(admin_url('admin.php?page=wcai-pages')); ?>" style="color:#1e40af;text-decoration:underline;font-weight:600;">📄 Pages Index</a> (updates automatically on save afterwards).
             </p>
             <div style="background:#1e293b;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-family:monospace;font-size:12px;white-space:pre-wrap;overflow-x:auto;max-height:300px;overflow-y:auto;">
 <?php echo esc_textarea($example_prompt); ?>
@@ -5708,3 +5708,722 @@ add_action('wp_footer', function() {
     </style>
     <?php
 }, 999999);
+define('WCAI_PAGE_MAX_CHARS', 15000);
+define('WCAI_PAGE_SNIPPET_CHARS', 320);
+
+function wcai_install_pages_table() {
+    global $wpdb;
+    $charset = $wpdb->get_charset_collate();
+    $table   = $wpdb->prefix . 'wcai_pages';
+
+    $wpdb->query($wpdb->prepare("CREATE TABLE IF NOT EXISTS %i (
+        post_id     BIGINT PRIMARY KEY,
+        title       VARCHAR(255),
+        slug        VARCHAR(200),
+        excerpt     TEXT,
+        content     LONGTEXT,
+        url         TEXT,
+        lang        VARCHAR(12) DEFAULT '',
+        is_indexed  TINYINT(1) DEFAULT 1,
+        updated_at  DATETIME,
+        INDEX idx_indexed (is_indexed),
+        INDEX idx_lang (lang)
+    ) $charset", $table));
+
+    $cols = $wpdb->get_col($wpdb->prepare("SHOW COLUMNS FROM %i", $table));
+    if (!in_array('lang', $cols)) {
+        $wpdb->query($wpdb->prepare("ALTER TABLE %i ADD COLUMN lang VARCHAR(12) DEFAULT '' AFTER url", $table));
+        $wpdb->query($wpdb->prepare("ALTER TABLE %i ADD INDEX idx_lang (lang)", $table));
+    }
+}
+add_action('admin_init', 'wcai_install_pages_table', 5);
+
+function wcai_get_page_lang($post_id) {
+    $lang = '';
+    if (function_exists('pll_get_post_language')) {
+        $l = pll_get_post_language($post_id, 'slug');
+        if (!empty($l)) $lang = $l;
+    }
+    if (empty($lang) && function_exists('wpml_get_language_information')) {
+        $info = wpml_get_language_information(null, $post_id);
+        if (is_array($info) && !empty($info['language_code'])) {
+            $lang = $info['language_code'];
+        }
+    }
+    if (empty($lang) && has_filter('wpml_element_language_code')) {
+        $l = apply_filters('wpml_element_language_code', null, [
+            'element_id'   => $post_id,
+            'element_type' => 'page',
+        ]);
+        if (!empty($l)) $lang = $l;
+    }
+    if (empty($lang)) {
+        $lang = (string) get_post_meta($post_id, '_wcai_lang', true);
+    }
+    return $lang;
+}
+
+function wcai_get_active_lang() {
+    if (function_exists('pll_current_language')) {
+        $l = pll_current_language('slug');
+        if (!empty($l)) return $l;
+    }
+    if (defined('ICL_LANGUAGE_CODE') && ICL_LANGUAGE_CODE) {
+        return (string) ICL_LANGUAGE_CODE;
+    }
+    if (function_exists('wpml_get_current_language')) {
+        $l = wpml_get_current_language();
+        if (!empty($l)) return $l;
+    }
+    return '';
+}
+
+function wcai_clean_page_content($raw) {
+    if (empty($raw)) return '';
+    $text = preg_replace('/<!--\s*\/?wp:.*?-->/s', '', $raw);
+    $text = preg_replace('/<!--.*?-->/s', '', $text);
+    $text = preg_replace('/\[[^\]]*\]/', '', $text);
+    $text = preg_replace('#<script[^>]*>.*?</script>#is', '', $text);
+    $text = preg_replace('#<style[^>]*>.*?</style>#is', '', $text);
+    $text = preg_replace('#<(iframe|noscript|svg)[^>]*>.*?</\1>#is', '', $text);
+    $text = preg_replace('#</(p|div|h[1-6]|li|tr|section|article|header|footer|br)>#i', "\n", $text);
+    $text = preg_replace('#<br\s*/?>#i', "\n", $text);
+    $text = wp_strip_all_tags($text);
+    $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $text = preg_replace('/[ \t]+/', ' ', $text);
+    $text = preg_replace('/\n{3,}/', "\n\n", $text);
+    return trim($text);
+}
+
+function wcai_index_page($post_id) {
+    global $wpdb;
+    $post_id = (int) $post_id;
+    if ($post_id <= 0) return false;
+
+    $post = get_post($post_id);
+    if (!$post || $post->post_type !== 'page' || $post->post_status !== 'publish') {
+        $wpdb->delete($wpdb->prefix . 'wcai_pages', ['post_id' => $post_id]);
+        return false;
+    }
+
+    $content = wcai_clean_page_content($post->post_content);
+    if (mb_strlen($content, 'UTF-8') > WCAI_PAGE_MAX_CHARS) {
+        $content = mb_substr($content, 0, WCAI_PAGE_MAX_CHARS, 'UTF-8');
+    }
+
+    $is = wcai_page_is_faq_or_privacy($post->post_name, $post->post_title, $content);
+    $snippet_chars = ($is['faq'] || $is['privacy']) ? 5000 : WCAI_PAGE_SNIPPET_CHARS;
+    $excerpt = $content !== ''
+        ? mb_substr($content, 0, $snippet_chars, 'UTF-8')
+        : '';
+    $excerpt = trim(preg_replace('/\s+/', ' ', $excerpt));
+
+    $existing = $wpdb->get_var($wpdb->prepare(
+        "SELECT is_indexed FROM {$wpdb->prefix}wcai_pages WHERE post_id = %d",
+        $post_id
+    ));
+    $is_indexed = ($existing === null) ? 1 : (int) $existing;
+
+    $lang = wcai_get_page_lang($post_id);
+
+    $wpdb->replace($wpdb->prefix . 'wcai_pages', [
+        'post_id'    => $post_id,
+        'title'      => $post->post_title,
+        'slug'       => $post->post_name,
+        'excerpt'    => $excerpt,
+        'content'    => $content,
+        'url'        => get_permalink($post_id),
+        'lang'       => $lang,
+        'is_indexed' => $is_indexed,
+        'updated_at' => current_time('mysql'),
+    ]);
+
+    delete_transient('wcai_pages_snippets');
+    return true;
+}
+
+function wcai_unindex_page($post_id) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix . 'wcai_pages', ['post_id' => (int) $post_id]);
+    delete_transient('wcai_pages_snippets');
+}
+
+function wcai_reindex_all_pages($respect_existing = true) {
+    global $wpdb;
+    $table = $wpdb->prefix . 'wcai_pages';
+
+    $excluded_slugs = ['cart', 'checkout', 'my-account', 'order-received', 'wc-order-received'];
+
+    $pages = $wpdb->get_results($wpdb->prepare(
+        "SELECT ID, post_name FROM {$wpdb->posts}
+         WHERE post_type = 'page' AND post_status = 'publish'
+         ORDER BY ID ASC"
+    ));
+
+    $existing_state = [];
+    if ($respect_existing) {
+        $rows = $wpdb->get_results($wpdb->prepare("SELECT post_id, is_indexed FROM %i", $table));
+        foreach ($rows as $r) {
+            $existing_state[(int) $r->post_id] = (int) $r->is_indexed;
+        }
+    }
+
+    $indexed = 0;
+    $skipped = 0;
+    foreach ($pages as $p) {
+        $pid = (int) $p->ID;
+        $slug = $p->post_name;
+
+        if (in_array($slug, $excluded_slugs, true)) {
+            $skipped++;
+            $wpdb->delete($table, ['post_id' => $pid]);
+            continue;
+        }
+
+        wcai_index_page($pid);
+
+        if (!$respect_existing) {
+            $wpdb->update($table, ['is_indexed' => 1], ['post_id' => $pid]);
+        } else {
+            if (isset($existing_state[$pid])) {
+                $wpdb->update($table, ['is_indexed' => $existing_state[$pid]], ['post_id' => $pid]);
+            }
+        }
+        $indexed++;
+    }
+
+    delete_transient('wcai_pages_snippets');
+    return ['indexed' => $indexed, 'skipped' => $skipped, 'total' => count($pages)];
+}
+
+function wcai_page_is_faq_or_privacy($slug, $title, $content = '') {
+    $slug_l  = mb_strtolower((string) $slug, 'UTF-8');
+    $title_l = mb_strtolower((string) $title, 'UTF-8');
+    $probe   = $slug_l . ' ' . $title_l;
+
+    $faq_tokens = [
+        'faq', 'f.a.q', 'question', 'q&a', 'q & a',
+        'вопрос', 'вопросы', 'частые вопросы', 'вопрос-ответ',
+        'вопросы и ответы', 'справка', 'помощь',
+        '常见问题', '问题', '问答', '幫助', '帮助', '問與答', '問答', '常見問題',
+        'सामान्य प्रश्न', 'प्रश्न', 'सवाल', 'सहायता',
+        '자주 묻는 질문', '질문', '도움말', '묻고 답하기',
+        'domande', 'preguntas', 'perguntas', 'questions fréquentes',
+        'häufige fragen', 'perguntas frequentes', 'pytania', 'sorular',
+        'أسئلة', 'الأسئلة الشائعة', 'שאלות נפוצות',
+        'よくある質問', '質問', 'ヘルプ',
+    ];
+    $privacy_tokens = [
+        'privacy', 'policy', 'gdpr', 'data protection', 'personal data',
+        'конфиденциальность', 'приватность', 'персональные данные', 'политика',
+        '隐私', '隱私', '私隐', '个人数据', '個人資料', '政策',
+        'गोपनीयता', 'निजता', 'नीति', 'व्यक्तिगत डेटा',
+        '개인정보', '개인 정보', '프라이버시', '정책',
+        'confidentialité', 'privacidad', 'datenschutz', 'riservatezza',
+        'gizlilik', '私の個人情報', '個人情報', 'プライバシー',
+        'privacidade', 'prywatność', 'polityka prywatności',
+        'خصوصية', 'الخصوصية', 'מדיניות פרטיות',
+    ];
+
+    $is_faq = false;
+    foreach ($faq_tokens as $tok) {
+        if (mb_strpos($probe, $tok, 0, 'UTF-8') !== false) { $is_faq = true; break; }
+    }
+    $is_privacy = false;
+    foreach ($privacy_tokens as $tok) {
+        if (mb_strpos($probe, $tok, 0, 'UTF-8') !== false) { $is_privacy = true; break; }
+    }
+
+    if (!$is_faq && !$is_privacy && $content !== '') {
+        $q_count = preg_match_all('/[?？؟]/u', $content);
+        if ($q_count >= 3 && mb_strlen($content, 'UTF-8') > 800) {
+            $is_faq = true;
+        }
+    }
+
+    return ['faq' => $is_faq, 'privacy' => $is_privacy];
+}
+
+add_action('save_post_page', function ($post_id, $post) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (wp_is_post_revision($post_id)) return;
+    if ($post->post_status === 'publish') {
+        wcai_index_page($post_id);
+    } else {
+        wcai_unindex_page($post_id);
+    }
+}, 10, 2);
+
+add_action('wp_trash_post', function ($post_id) {
+    $post = get_post($post_id);
+    if ($post && $post->post_type === 'page') wcai_unindex_page($post_id);
+});
+
+add_action('before_delete_post', function ($post_id) {
+    $post = get_post($post_id);
+    if ($post && $post->post_type === 'page') wcai_unindex_page($post_id);
+});
+
+function wcai_get_pages_snippets($lang = null) {
+    $active_lang = ($lang === null) ? wcai_get_active_lang() : (string) $lang;
+    $cache_key   = 'wcai_pages_snippets_' . md5($active_lang);
+    $cached      = get_transient($cache_key);
+    if (is_array($cached)) return $cached;
+
+    global $wpdb;
+    $table = $wpdb->prefix . 'wcai_pages';
+
+    if ($active_lang !== '') {
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT title, slug, excerpt, url, lang FROM %i
+             WHERE is_indexed = 1 AND (lang = %s OR lang = '')
+             ORDER BY title ASC",
+            $table, $active_lang
+        ));
+    } else {
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT title, slug, excerpt, url, lang FROM %i
+             WHERE is_indexed = 1
+             ORDER BY title ASC",
+            $table
+        ));
+    }
+
+    $out = [];
+    foreach ($rows as $r) {
+        $snippet = trim((string) $r->excerpt);
+        if ($snippet === '') continue;
+        $key = $r->title;
+        if (!empty($r->lang)) $key .= ' [' . $r->lang . ']';
+        $out[$key] = [
+            'snippet' => $snippet,
+            'url'     => $r->url,
+            'slug'    => $r->slug,
+            'lang'    => $r->lang,
+        ];
+    }
+
+    set_transient($cache_key, $out, HOUR_IN_SECONDS);
+    return $out;
+}
+
+function wcai_build_pages_prompt_block($lang = null) {
+    $pages = wcai_get_pages_snippets($lang);
+    if (empty($pages)) return '';
+
+    $block  = "\n## Store Pages (indexed content)\n";
+    $block .= "Use these pages to answer questions about policies, shipping, returns, privacy, about us, etc.\n";
+    $block .= "If a question matches a page topic, quote or paraphrase the page content. Never invent policy details.\n\n";
+
+    foreach ($pages as $title => $data) {
+        $snippet = $data['snippet'];
+        $is = wcai_page_is_faq_or_privacy($data['slug'], $title);
+        $limit = ($is['faq'] || $is['privacy']) ? 5000 : 280;
+        if (mb_strlen($snippet, 'UTF-8') > $limit) {
+            $snippet = mb_substr($snippet, 0, $limit, 'UTF-8') . '…';
+        }
+        $block .= "### {$title}\n{$snippet}\n";
+    }
+
+    return $block;
+}
+
+add_filter('wcai_catalog_info', function ($catalog_info) {
+    return $catalog_info . wcai_build_pages_prompt_block();
+}, 40);
+
+function wcai_search_pages($query, $limit = 5, $lang = null) {
+    global $wpdb;
+    $table = $wpdb->prefix . 'wcai_pages';
+
+    $active_lang = ($lang === null) ? wcai_get_active_lang() : (string) $lang;
+    $lang_sql = '';
+    $lang_params = [];
+    if ($active_lang !== '') {
+        $lang_sql = " AND (lang = %s OR lang = '')";
+        $lang_params[] = $active_lang;
+    }
+
+    $query = trim((string) $query);
+    if ($query === '') {
+        $sql = "SELECT post_id, title, slug, excerpt, url, content, lang
+                FROM %i WHERE is_indexed = 1 {$lang_sql}
+                ORDER BY title ASC LIMIT %d";
+        $params = array_merge([$table], $lang_params, [$limit]);
+        return $wpdb->get_results($wpdb->prepare($sql, $params));
+    }
+
+    $words = preg_split('/\s+/u', mb_strtolower($query, 'UTF-8'));
+    $words = array_values(array_filter($words, function ($w) {
+        return mb_strlen($w, 'UTF-8') > 2;
+    }));
+    $words = array_slice(array_unique($words), 0, 8);
+    if (empty($words)) $words = [$query];
+
+    $like_conditions = [];
+    $like_params = [];
+    foreach ($words as $w) {
+        $like = '%' . $wpdb->esc_like($w) . '%';
+        $like_conditions[] = "(LOWER(title) LIKE %s OR LOWER(content) LIKE %s)";
+        $like_params[] = $like;
+        $like_params[] = $like;
+    }
+    $where = implode(' AND ', $like_conditions);
+
+    $sql = "SELECT post_id, title, slug, excerpt, url, content, lang
+            FROM %i
+            WHERE is_indexed = 1 {$lang_sql} AND ({$where})
+            ORDER BY
+                (CASE WHEN LOWER(title) LIKE %s THEN 3 ELSE 0 END) +
+                (CASE WHEN LOWER(content) LIKE %s THEN 1 ELSE 0 END) DESC
+            LIMIT %d";
+
+    $full_like = '%' . $wpdb->esc_like(mb_strtolower($query, 'UTF-8')) . '%';
+    $params = array_merge(
+        [$table],
+        $lang_params,
+        $like_params,
+        [$full_like, $full_like, $limit]
+    );
+
+    return $wpdb->get_results($wpdb->prepare($sql, $params));
+}
+
+add_action('rest_api_init', function () {
+    register_rest_route('wc-ai/v1', '/pages-search', [
+        'methods'  => 'POST',
+        'callback' => function ($req) {
+            $params = $req->get_json_params();
+            $query  = isset($params['query']) ? sanitize_text_field($params['query']) : '';
+            $limit  = min((int) ($params['limit'] ?? 5), 10);
+            $lang   = isset($params['lang']) ? sanitize_text_field($params['lang']) : null;
+
+            $rows = wcai_search_pages($query, $limit, $lang);
+
+            $out = [];
+            foreach ($rows as $r) {
+                $content = $r->content;
+                if (mb_strlen($content, 'UTF-8') > 2000) {
+                    $content = mb_substr($content, 0, 2000, 'UTF-8') . '…';
+                }
+                $out[] = [
+                    'id'      => (int) $r->post_id,
+                    'title'   => $r->title,
+                    'slug'    => $r->slug,
+                    'url'     => $r->url,
+                    'lang'    => $r->lang,
+                    'excerpt' => $r->excerpt,
+                    'content' => $content,
+                ];
+            }
+
+            return new WP_REST_Response(['pages' => $out, 'count' => count($out)], 200);
+        },
+        'permission_callback' => 'wcai_verify_rest_credentials',
+    ]);
+
+    register_rest_route('wc-ai/v1', '/pages-preview', [
+        'methods'  => 'POST',
+        'callback' => function ($req) {
+            $params = $req->get_json_params();
+            $lang   = isset($params['lang']) ? sanitize_text_field($params['lang']) : null;
+
+            $catalog = '';
+            if (function_exists('wcai_enrich_catalog_info'))           $catalog = wcai_enrich_catalog_info($catalog);
+            if (function_exists('wcai_enrich_catalog_info_variations')) $catalog = wcai_enrich_catalog_info_variations($catalog);
+            if (function_exists('wcai_enrich_catalog_info_extra_fields')) $catalog = wcai_enrich_catalog_info_extra_fields($catalog);
+
+            $catalog .= wcai_build_pages_prompt_block($lang);
+
+            return new WP_REST_Response(['catalog_info' => $catalog], 200);
+        },
+        'permission_callback' => 'wcai_verify_rest_credentials',
+    ]);
+});
+
+add_action('admin_menu', function () {
+    add_submenu_page(
+        'wcai',
+        'Pages Index',
+        '📄 Pages Index',
+        'manage_options',
+        'wcai-pages',
+        'wcai_page_pages_index'
+    );
+}, 20);
+
+function wcai_page_pages_index() {
+    if (!current_user_can('manage_options')) return;
+    global $wpdb;
+    $table = $wpdb->prefix . 'wcai_pages';
+
+    if (isset($_POST['wcai_save_pages']) && check_admin_referer('wcai_pages_action')) {
+        $included = isset($_POST['include']) && is_array($_POST['include'])
+            ? array_map('intval', wp_unslash($_POST['include']))
+            : [];
+
+        $all_pages = $wpdb->get_col($wpdb->prepare(
+            "SELECT post_id FROM %i", $table
+        ));
+
+        foreach ($all_pages as $pid) {
+            $wpdb->update(
+                $table,
+                ['is_indexed' => in_array((int) $pid, $included, true) ? 1 : 0],
+                ['post_id' => (int) $pid]
+            );
+        }
+        delete_transient('wcai_pages_snippets');
+        echo '<div class="notice notice-success"><p>✅ Page selection saved.</p></div>';
+    }
+
+    if (isset($_POST['wcai_reindex_pages']) && check_admin_referer('wcai_pages_action')) {
+        $result = wcai_reindex_all_pages(true);
+        echo '<div class="notice notice-success"><p>✅ Re-indexed ' . (int) $result['indexed']
+            . ' pages (' . (int) $result['skipped'] . ' service pages skipped).</p></div>';
+    }
+
+    if (isset($_POST['wcai_reset_pages']) && check_admin_referer('wcai_pages_action')) {
+        $result = wcai_reindex_all_pages(false);
+        echo '<div class="notice notice-success"><p>♻️ Reset: all ' . (int) $result['indexed']
+            . ' pages re-indexed and enabled.</p></div>';
+    }
+
+    $preview_html = null;
+    $preview_lang = '';
+    if (isset($_POST['wcai_preview_prompt']) && check_admin_referer('wcai_pages_action')) {
+        $preview_lang = isset($_POST['preview_lang']) ? sanitize_text_field(wp_unslash($_POST['preview_lang'])) : '';
+
+        $catalog = '';
+        if (function_exists('wcai_enrich_catalog_info'))           $catalog = wcai_enrich_catalog_info($catalog);
+        if (function_exists('wcai_enrich_catalog_info_variations')) $catalog = wcai_enrich_catalog_info_variations($catalog);
+        if (function_exists('wcai_enrich_catalog_info_extra_fields')) $catalog = wcai_enrich_catalog_info_extra_fields($catalog);
+        $catalog .= wcai_build_pages_prompt_block($preview_lang);
+
+        $merchant = (string) get_option('wcai_merchant_prompt', '');
+        $preview_html = $catalog;
+        $preview_html .= "\n\n---\n## Merchant Instructions (wcai_merchant_prompt)\n" . $merchant;
+    }
+
+    $rows = $wpdb->get_results($wpdb->prepare(
+        "SELECT post_id, title, slug, excerpt, url, lang, is_indexed, updated_at
+         FROM %i ORDER BY lang ASC, title ASC", $table
+    ));
+    $total_indexed = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM %i WHERE is_indexed = 1", $table
+    ));
+
+    $langs = [];
+    foreach ($rows as $r) {
+        $l = $r->lang !== '' ? $r->lang : '(default)';
+        if (!isset($langs[$l])) $langs[$l] = 0;
+        $langs[$l]++;
+    }
+    ksort($langs);
+    $multi_lang = (count(array_filter(array_keys($langs), function ($l) {
+        return $l !== '(default)';
+    })) > 1);
+    ?>
+    <div class="wrap">
+        <h1>📄 Pages Index</h1>
+
+        <div style="background:#eff6ff;border-left:4px solid #3b82f6;padding:14px 18px;border-radius:10px;margin:16px 0;font-size:13px;color:#1e40af;line-height:1.6;">
+            <strong>ℹ️ What is this?</strong> Index your store's <strong>pages</strong> (Privacy Policy, Shipping, Returns, About Us, FAQ, etc.) so the AI can answer customer questions about them.
+            <br>Pages are re-indexed <strong>automatically</strong> on save/publish. Click <strong>🔄 Re-index All Pages</strong> once after installing or after changing <code>wcai_clean_page_content()</code>. Use checkboxes below to <strong>exclude</strong> specific pages.
+            <br>Service pages (Cart, Checkout, My Account) are <strong>always excluded</strong>.
+            <?php if (!empty($langs)): ?>
+                <br><strong>🌐 Multilingual:</strong>
+                <?php
+                $parts = [];
+                foreach ($langs as $l => $c) $parts[] = esc_html($l) . ' (' . (int) $c . ')';
+                echo implode(' · ', $parts);
+                ?>
+            <?php endif; ?>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0;">
+            <div style="background:#fff;padding:16px 20px;border-radius:12px;border:1px solid #e5e7eb;">
+                <div style="font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;">Total Pages</div>
+                <div style="font-size:24px;font-weight:700;color:#1f2937;margin-top:4px;"><?php echo esc_html(count($rows)); ?></div>
+            </div>
+            <div style="background:#fff;padding:16px 20px;border-radius:12px;border:1px solid #e5e7eb;">
+                <div style="font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;">Indexed</div>
+                <div style="font-size:24px;font-weight:700;color:#22c55e;margin-top:4px;"><?php echo esc_html($total_indexed); ?></div>
+            </div>
+            <div style="background:#fff;padding:16px 20px;border-radius:12px;border:1px solid #e5e7eb;">
+                <div style="font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;">Excluded</div>
+                <div style="font-size:24px;font-weight:700;color:#dc2626;margin-top:4px;"><?php echo esc_html(count($rows) - $total_indexed); ?></div>
+            </div>
+        </div>
+
+        <div style="margin:20px 0; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <form method="post" style="display:inline;">
+                <?php wp_nonce_field('wcai_pages_action'); ?>
+                <button name="wcai_reindex_pages" class="button" style="background:#4F46E5;color:#fff;border:none;padding:8px 20px;border-radius:4px;cursor:pointer;font-weight:600;">
+                    🔄 Re-index All Pages
+                </button>
+            </form>
+            <form method="post" style="display:inline;" onsubmit="return confirm('Reset will re-index ALL pages and enable them all. Continue?');">
+                <?php wp_nonce_field('wcai_pages_action'); ?>
+                <button name="wcai_reset_pages" class="button" style="background:#f59e0b;color:#fff;border:none;padding:8px 20px;border-radius:4px;cursor:pointer;font-weight:600;">
+                    ♻️ Reset Selection
+                </button>
+            </form>
+            <form method="post" style="display:inline-flex;gap:8px;align-items:center;">
+                <?php wp_nonce_field('wcai_pages_action'); ?>
+                <?php if ($multi_lang): ?>
+                    <label for="wcai-preview-lang" style="font-size:13px;color:#374151;font-weight:600;white-space:nowrap;">🌐 Preview language:</label>
+                    <select id="wcai-preview-lang" name="preview_lang" style="padding:6px 10px;border-radius:4px;border:1px solid #d1d5db;">
+                        <option value="">Auto (current)</option>
+                        <?php foreach ($langs as $l => $c): ?>
+                            <?php if ($l === '(default)') continue; ?>
+                            <option value="<?php echo esc_attr($l); ?>" <?php selected($preview_lang, $l); ?>><?php echo esc_html($l); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                <?php endif; ?>
+                <button name="wcai_preview_prompt" class="button" style="background:#0ea5e9;color:#fff;border:none;padding:8px 20px;border-radius:4px;cursor:pointer;font-weight:600;">
+                    👁️ Preview Prompt
+                </button>
+            </form>
+            <a href="<?php echo esc_url(admin_url('edit.php?post_type=page')); ?>" class="button" style="padding:8px 20px;">
+                ✏️ Edit Pages in WP
+            </a>
+        </div>
+
+        <?php if ($preview_html !== null): ?>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin:20px 0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <h3 style="margin:0;font-size:15px;">👁️ Prompt Preview (what LLM receives)</h3>
+                    <div style="display:flex;gap:8px;">
+                        <button type="button" onclick="wcaiCopyPreview()" class="button" style="background:#4F46E5;color:#fff;border:none;padding:6px 16px;border-radius:4px;cursor:pointer;font-weight:600;">📋 Copy</button>
+                        <span id="wcai-copy-msg" style="display:none;color:#22c55e;font-weight:600;line-height:30px;">✅ Copied!</span>
+                    </div>
+                </div>
+                <p style="margin:8px 0 10px;font-size:12px;color:#6b7280;">
+                    Language: <strong><?php echo esc_html($preview_lang !== '' ? $preview_lang : '(auto / current)'); ?></strong>
+                    &nbsp;·&nbsp; Length: <strong><?php echo esc_html(mb_strlen($preview_html, 'UTF-8')); ?></strong> chars
+                </p>
+                <textarea id="wcai-preview-text" readonly style="width:100%;height:420px;font-family:monospace;font-size:12px;background:#0f172a;color:#e2e8f0;border:none;border-radius:8px;padding:12px;box-sizing:border-box;"><?php echo esc_textarea($preview_html); ?></textarea>
+            </div>
+            <script>
+            function wcaiCopyPreview() {
+                var ta = document.getElementById('wcai-preview-text');
+                if (!ta) return;
+                ta.select();
+                ta.setSelectionRange(0, 999999);
+                try { document.execCommand('copy'); } catch(e) {}
+                if (navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(function(){});
+                var msg = document.getElementById('wcai-copy-msg');
+                if (msg) { msg.style.display = 'inline'; setTimeout(function(){ msg.style.display = 'none'; }, 2000); }
+            }
+            </script>
+        <?php endif; ?>
+
+        <?php if (empty($rows)): ?>
+            <div class="notice notice-info"><p>No pages indexed yet. Click <strong>🔄 Re-index All Pages</strong> above to scan your pages.</p></div>
+        <?php else: ?>
+        <form method="post">
+            <?php wp_nonce_field('wcai_pages_action'); ?>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th width="40" style="text-align:center;">
+                            <input type="checkbox" id="wcai-toggle-all" title="Toggle all" style="cursor:pointer;">
+                        </th>
+                        <th>Page Title</th>
+                        <th width="100">Lang</th>
+                        <th width="120">Slug</th>
+                        <th>Content Preview</th>
+                        <th width="150">Updated</th>
+                        <th width="80">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($rows as $r): ?>
+                    <tr>
+                        <td style="text-align:center;">
+                            <input type="checkbox" name="include[]" value="<?php echo (int) $r->post_id; ?>"
+                                class="wcai-page-checkbox"
+                                <?php checked((int) $r->is_indexed, 1); ?>>
+                        </td>
+                        <td>
+                            <strong><?php echo esc_html($r->title ?: '(no title)'); ?></strong><br>
+                            <a href="<?php echo esc_url($r->url); ?>" target="_blank" rel="noopener" style="font-size:11px;color:#4F46E5;text-decoration:none;">
+                                ↗ <?php echo esc_html($r->url); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php if (!empty($r->lang)): ?>
+                                <span style="background:#e0e7ff;color:#3730a3;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;"><?php echo esc_html($r->lang); ?></span>
+                            <?php else: ?>
+                                <span style="color:#9ca3af;font-size:11px;">—</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><code style="font-size:11px;"><?php echo esc_html($r->slug); ?></code></td>
+                        <td style="font-size:12px;color:#6b7280;">
+                            <?php
+                            $preview = trim((string) $r->excerpt);
+                            if (mb_strlen($preview, 'UTF-8') > 160) {
+                                $preview = mb_substr($preview, 0, 160, 'UTF-8') . '…';
+                            }
+                            echo esc_html($preview ?: '—');
+                            ?>
+                        </td>
+                        <td style="font-size:12px;color:#6b7280;"><?php echo esc_html($r->updated_at ?: '—'); ?></td>
+                        <td>
+                            <?php if ((int) $r->is_indexed === 1): ?>
+                                <span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">✅ In AI</span>
+                            <?php else: ?>
+                                <span style="background:#fee2e2;color:#991b1b;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">🚫 Excluded</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <div style="margin-top:16px;">
+                <button name="wcai_save_pages" class="button button-primary" style="padding:8px 32px;">
+                    💾 Save Selection
+                </button>
+                <span style="color:#6b7280;font-size:12px;margin-left:12px;">
+                    Unchecked pages will be excluded from the AI index.
+                </span>
+            </div>
+        </form>
+        <script>
+        document.getElementById('wcai-toggle-all')?.addEventListener('change', function() {
+            document.querySelectorAll('.wcai-page-checkbox').forEach(function(cb) {
+                cb.checked = this.checked;
+            }, this);
+        });
+        </script>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+add_action('admin_footer', function () {
+    $screen = get_current_screen();
+    if (!$screen || strpos($screen->id, 'wcai-diagnostics') === false) return;
+
+    global $wpdb;
+    $table = $wpdb->prefix . 'wcai_pages';
+    $exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table));
+    if (!$exists) return;
+
+    $total   = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $table));
+    $indexed = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i WHERE is_indexed = 1", $table));
+    ?>
+    <div style="max-width:1200px;margin:20px auto 0;">
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;">
+            <h3 style="margin:0 0 10px;font-size:14px;">📄 Pages Index</h3>
+            <p style="margin:0;font-size:13px;color:#374151;">
+                Indexed pages: <strong><?php echo esc_html($indexed); ?></strong> of <strong><?php echo esc_html($total); ?></strong> total
+                &nbsp;·&nbsp;
+                <a href="<?php echo esc_url(admin_url('admin.php?page=wcai-pages')); ?>" style="color:#4F46E5;">Manage →</a>
+            </p>
+        </div>
+    </div>
+    <?php
+});
