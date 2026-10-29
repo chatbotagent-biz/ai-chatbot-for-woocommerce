@@ -3964,10 +3964,10 @@ function wcai_page_index() {
 function wcai_page_settings() {
     if (isset($_POST['save']) && check_admin_referer('wcai_settings_action')) {
         $merchant_prompt = sanitize_textarea_field(wp_unslash($_POST['merchant_prompt'] ?? ''));
-        $max_chars = 6000;
+        $max_chars = 3000;
         if (mb_strlen($merchant_prompt, 'UTF-8') > $max_chars) {
             $merchant_prompt = mb_substr($merchant_prompt, 0, $max_chars, 'UTF-8');
-            echo '<div class="notice notice-warning"><p>⚠️ Instructions truncated to 6000 characters to save tokens.</p></div>';
+            echo '<div class="notice notice-warning"><p>⚠️ Instructions truncated to 3000 characters to save tokens.</p></div>';
         }
         update_option('wcai_merchant_prompt', $merchant_prompt);
         update_option('wcai_welcome_message', sanitize_text_field(wp_unslash($_POST['welcome_message'] ?? '')));
@@ -3981,13 +3981,13 @@ function wcai_page_settings() {
     $store_name = get_option('wcai_store_name', get_bloginfo('name'));
     $show_chatbot = get_option('wcai_show_chatbot', 1);
 
-        $example_prompt = "## 1. About This Store\nName: [[Store Name]]\nURL: [[https://your-store.com]]\nWhat we sell: [[1-2 sentences — e.g. machine embroidery designs in multiple formats]]\nAudience: [[e.g. hobbyists, professionals, small embroidery businesses]]\nTone: [[e.g. friendly, concise, helpful — no hype, no ALL CAPS]]\n\n## 2. Contact & Escalation\nSupport email: [[support@your-store.com]]\nPhone: [[optional]]\nAddress: [[optional]]\nHours: [[optional]]\nEscalate to a human when:\n- Payment failed, order missing, damaged, or wrong.\n- Refund / return / exchange / cancellation needs approval.\n- Customer can't download a purchased file or access their account.\n- Custom work (digitizing, logo, size change) is requested.\n- The answer depends on data you don't have.\n- Customer explicitly asks for a human.\nWhen escalating: explain briefly why, give the email, and never invent response times.\n\n## 3. Recommendations\nSearch the catalog before recommending. Narrow by the customer's stated need, budget, and machine/file format. Explain briefly why each product fits. Compare only with verified data. Never recommend products not in the catalog. Never claim \"best\", \"cheapest\", or \"most popular\" without data. If nothing fits — say so and suggest a different search or human help.\n\n## 4. Digital Products\nExplain how files are delivered per store policy (instant download, email link, account library). Never claim a file was sent or a license activated unless confirmed. Broken download or missing file → support email.\n\n## 5. Orders & Payments\nShare order info only through authorized systems tied to the customer's order. Never invent order numbers, payment status, tracking, or delivery dates. Never request passwords or full card numbers. Payment or order issues → support email.\n\n## 6. Customization / Digitizing\nDescribe only services the store actually offers (e.g. custom digitizing, size changes, color swaps, logo work). For pricing and turnaround, direct to the product page or support. Never promise a custom job can be done without confirmation.\n\n## 7. Hard Rules (do not break)\n- Accuracy over speed: say \"I don't know\" or \"let me connect you\" rather than guess.\n- No fabricated policies, prices, discounts, stock, warranties, or contacts.\n- No claims that an action (order placed, refund issued, file sent, booking confirmed) was completed unless the system confirms it.\n- No personal or payment data requested beyond what's strictly needed.\n- Use only contacts listed above — never invent phone numbers, addresses, or emails.\n- If the customer writes in another language — reply in that language.\n- If the request is unclear — ask one short clarifying question.\n\n## 8. Store-Specific Notes\n[[Any extra rules unique to this store — e.g. \"always mention the free monthly design\", \"never discuss competitor brands\", \"offer 10% off for first order via code WELCOME10\"]]";
+    $example_prompt = "## 1. About This Store\nName: [[Store Name]]\nWhat we sell: [[1 sentence]]\nAudience: [[e.g. hobbyists, professionals]]\nTone: [[e.g. friendly, concise, no hype, no ALL CAPS]]\n\n## 2. Contact & Escalation\nSupport email: [[support@your-store.com]]\nHours: [[optional]]\nEscalate to a human when:\n- Payment failed, order missing, damaged, or wrong.\n- Refund / return / exchange / cancellation needs approval.\n- Customer can't download a purchased file or access their account.\n- Custom work is requested.\n- The answer depends on data you don't have.\n- Customer explicitly asks for a human.\nWhen escalating: explain briefly why, give the email, never invent response times.\n\n## 3. Recommendations\nSearch the catalog before recommending. Narrow by the customer's need, budget, and file format. Explain briefly why each product fits. Compare only with verified data. Never recommend products not in the catalog. Never claim \"best\", \"cheapest\", or \"most popular\" without data. If nothing fits — say so and suggest a different search or human help.\n\n## 4. Hard Rules (do not break)\n- Accuracy over speed: say \"I don't know\" or \"let me connect you\" rather than guess.\n- No fabricated policies, prices, discounts, stock, warranties, or contacts.\n- No claims that an action (order placed, refund issued, file sent) was completed unless the system confirms it.\n- No personal or payment data requested beyond what's strictly needed.\n- Use only contacts listed above — never invent phone numbers, addresses, or emails.\n- If the customer writes in another language — reply in that language.\n- If the request is unclear — ask one short clarifying question.\n\n## 5. Store-Specific Notes\n[[Any extra rules unique to this store — e.g. \"always mention the free monthly design\", \"never discuss competitor brands\", \"offer 10% off for first order via code WELCOME10\"]]";
     ?>
     <div class="wrap">
         <h1>⚙️ Settings</h1>
 
-        <div style="background:#f0fdf4;border-left:4px solid #22c55e;padding:14px 18px;border-radius:10px;margin:16px 0;font-size:13px;">
-            <strong>📝 Store Instructions</strong> — max <strong>6000 characters</strong>
+         <div style="background:#f0fdf4;border-left:4px solid #22c55e;padding:14px 18px;border-radius:10px;margin:16px 0;font-size:13px;">
+            <strong>📝 Store Instructions</strong> — max <strong>3000 characters</strong>
             <br>Excess will be automatically truncated on save.
         </div>
 
@@ -4030,18 +4030,18 @@ function wcai_page_settings() {
                         <p class="description">Uncheck to hide the chat widget from the frontend</p>
                     </td>
                 </tr>
-                <tr>
-                    <th>Store Instructions <br><small style="font-weight:normal;color:#6b7280;">Max 6000 characters</small></th>
+                                <tr>
+                    <th>Store Instructions <br><small style="font-weight:normal;color:#6b7280;">Max 3000 characters</small></th>
                     <td>
                         <textarea
                             name="merchant_prompt"
                             rows="10"
                             style="width:100%;max-width:600px;font-family:monospace;font-size:13px;"
-                            maxlength="6000"
+                            maxlength="3000"
                             oninput="document.getElementById('wcai-char-count').textContent = this.value.length;"
                         ><?php echo esc_textarea($merchant_prompt); ?></textarea>
                         <p class="description">
-                            <span id="wcai-char-count"><?php echo esc_html(mb_strlen($merchant_prompt, 'UTF-8')); ?></span> / 6000 characters
+                            <span id="wcai-char-count"><?php echo esc_html(mb_strlen($merchant_prompt, 'UTF-8')); ?></span> / 3000 characters
                         </p>
                     </td>
                 </tr>
@@ -6231,8 +6231,8 @@ function wcai_page_pages_index() {
             <strong>ℹ️ What is this?</strong> Index your store's <strong>pages</strong> (Privacy Policy, Shipping, Returns, About Us, FAQ, etc.) so the AI can answer customer questions about them.
             <br>Pages are re-indexed <strong>automatically</strong> on save/publish. Click <strong>🔄 Re-index All Pages</strong> once after installing or after changing <code>wcai_clean_page_content()</code>. Use checkboxes below to <strong>exclude</strong> specific pages.
             <br>Service pages (Cart, Checkout, My Account) are <strong>always excluded</strong>.
-            <?php if (!empty($langs)): ?>
-                <br><strong>🌐 Multilingual:</strong>
+                        <?php if (count($langs) > 1): ?>
+                <br><strong>🌐 Languages:</strong>
                 <?php
                 $parts = [];
                 foreach ($langs as $l => $c) $parts[] = esc_html($l) . ' (' . (int) $c . ')';
